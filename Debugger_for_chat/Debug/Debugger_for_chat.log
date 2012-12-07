@@ -1,0 +1,35 @@
+﻿Build started 07.12.2012 20:30:12.
+     1>Project "C:\Users\free0u\Documents\IFMO\Chat\Debugger_for_chat\Debugger_for_chat.vcxproj" on node 2 (build target(s)).
+     1>PrepareForBuild:
+         Creating directory "C:\Users\free0u\Documents\IFMO\Chat\Win32\Debug\".
+       InitializeBuildStatus:
+         Creating "Debug\Debugger_for_chat.unsuccessfulbuild" because "AlwaysCreate" was specified.
+     1>RCC : warning : No resources in 'C:\Users\free0u\Documents\IFMO\Chat\Debugger_for_chat\debugger_for_chat.qrc'.
+         
+         Moc'ing debugger_for_chat.h...
+         Uic'ing debugger_for_chat.ui...
+         Rcc'ing debugger_for_chat.qrc...
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I.\GeneratedFiles /I. /IC:\Qt\4.8.4\include /I.\GeneratedFiles\Debug /IC:\Qt\4.8.4\include\QtCore /IC:\Qt\4.8.4\include\QtGui /Zi /nologo /W1 /WX- /Od /Oy- /D UNICODE /D WIN32 /D QT_LARGEFILE_SUPPORT /D QT_DLL /D QT_CORE_LIB /D QT_GUI_LIB /Gm- /EHsc /MDd /GS /fp:precise /Zc:wchar_t- /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt debugger_for_chat.cpp GeneratedFiles\Debug\moc_debugger_for_chat.cpp main.cpp
+         debugger_for_chat.cpp
+         moc_debugger_for_chat.cpp
+         main.cpp
+         Generating Code...
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I.\GeneratedFiles /I. /IC:\Qt\4.8.4\include /I.\GeneratedFiles\Debug /IC:\Qt\4.8.4\include\QtCore /IC:\Qt\4.8.4\include\QtGui /Zi /nologo /W1 /WX- /Od /Oy- /D UNICODE /D WIN32 /D QT_LARGEFILE_SUPPORT /D QT_DLL /D QT_CORE_LIB /D QT_GUI_LIB /Gm- /EHsc /MDd /GS /fp:precise /Zc:wchar_t- /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt GeneratedFiles\qrc_debugger_for_chat.cpp
+         qrc_debugger_for_chat.cpp
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\free0u\Documents\IFMO\Chat\Win32\Debug\\Debugger_for_chat.exe" /NOLOGO /LIBPATH:C:\Qt\4.8.4\lib qtmaind.lib QtCored4.lib QtGuid4.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Debugger_for_chat.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\free0u\Documents\IFMO\Chat\Win32\Debug\Debugger_for_chat.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\free0u\Documents\IFMO\Chat\Win32\Debug\Debugger_for_chat.lib" /MACHINE:X86 Debug\debugger_for_chat.obj
+         Debug\moc_debugger_for_chat.obj
+         Debug\qrc_debugger_for_chat.obj
+         Debug\main.obj
+         Debugger_for_chat.vcxproj -> C:\Users\free0u\Documents\IFMO\Chat\Win32\Debug\Debugger_for_chat.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\Users\free0u\Documents\IFMO\Chat\Win32\Debug\\Debugger_for_chat.exe;#1" /manifest Debug\Debugger_for_chat.exe.intermediate.manifest
+       FinalizeBuildStatus:
+         Deleting file "Debug\Debugger_for_chat.unsuccessfulbuild".
+         Touching "Debug\Debugger_for_chat.lastbuildstate".
+     1>Done Building Project "C:\Users\free0u\Documents\IFMO\Chat\Debugger_for_chat\Debugger_for_chat.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:03.50
