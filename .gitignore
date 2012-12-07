@@ -23,3 +23,5 @@ Makefile
 *.sdf
 *.opensdf
 /Win32
+*/Debug
+*/Release
