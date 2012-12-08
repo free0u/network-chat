@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'debugger_for_chat.ui'
 **
-** Created: Sat 8. Dec 00:49:22 2012
+** Created: Sat 8. Dec 16:28:19 2012
 **      by: Qt User Interface Compiler version 4.8.4
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
