@@ -25,3 +25,5 @@ Makefile
 /Win32
 */Debug
 */Release
+*.suo
+/ipch
