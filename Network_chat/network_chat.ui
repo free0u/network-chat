@@ -1,29 +1,135 @@
-<UI version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>Network_chatClass</class>
- <widget class="QMainWindow" name="Network_chatClass" >
-  <property name="objectName" >
-   <string notr="true">Network_chatClass</string>
-  </property>
-  <property name="geometry" >
+ <widget class="QMainWindow" name="Network_chatClass">
+  <property name="geometry">
    <rect>
-	<x>0</x>
-	<y>0</y>
-	<width>600</width>
-	<height>400</height>
+    <x>0</x>
+    <y>0</y>
+    <width>526</width>
+    <height>462</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Network_chat</string>
   </property>
-  <widget class="QMenuBar" name="menuBar" />
-  <widget class="QToolBar" name="mainToolBar" />
-  <widget class="QWidget" name="centralWidget" />
-  <widget class="QStatusBar" name="statusBar" />
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>511</width>
+      <height>441</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="3" column="0">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QLineEdit" name="lineEditMessage"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButtonSend">
+         <property name="text">
+          <string>Send</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="0" column="0">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Nick:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEditNick"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButtonJoin">
+         <property name="text">
+          <string>Join chat</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButtonLeave">
+         <property name="text">
+          <string>Leave chat</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="0" column="1">
+      <widget class="QCheckBox" name="checkBox">
+       <property name="text">
+        <string>local peer discovery</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+       <property name="tristate">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Peers:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>History:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QPlainTextEdit" name="plainTextEditChat"/>
+     </item>
+     <item row="2" column="1">
+      <widget class="QPlainTextEdit" name="plainTextEditPeers">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>150</width>
+         <height>16777215</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <zorder>lineEditMessage</zorder>
+   <zorder>pushButtonSend</zorder>
+   <zorder>lineEditMessage</zorder>
+   <zorder>verticalLayoutWidget</zorder>
+   <zorder>checkBox</zorder>
+   <zorder>textBrowserPeers</zorder>
+   <zorder>textBrowserPeers</zorder>
+   <zorder>horizontalLayoutWidget</zorder>
+   <zorder>checkBox</zorder>
+   <zorder>label_2</zorder>
+   <zorder>label_3</zorder>
+  </widget>
  </widget>
- <layoutDefault spacing="6" margin="11" />
- <pixmapfunction></pixmapfunction>
+ <layoutdefault spacing="6" margin="11"/>
  <resources>
-   <include location="network_chat.qrc"/>
+  <include location="network_chat.qrc"/>
  </resources>
  <connections/>
-</UI>
+</ui>
