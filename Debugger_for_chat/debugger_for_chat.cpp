@@ -21,6 +21,8 @@ void Debugger_for_chat::sendMessage() {
 	QString msg = ui.lineEditChat->text();
 	QByteArray data = msg.toUtf8();
 	sok->writeDatagram(data.data(), QHostAddress::Broadcast, 31313);
+	msg = "send: " + msg;
+	print_message(msg);
 }
 
 void Debugger_for_chat::showMessage() {
@@ -28,6 +30,14 @@ void Debugger_for_chat::showMessage() {
 		QByteArray data;
 		data.resize(sok->pendingDatagramSize());
 		sok->readDatagram(data.data(), data.size());
-		ui.textBrowserChat->setText(data.data());
+		QString m = data.data();
+		m = "receive: " + m;
+		print_message(m);
 	}
+}
+
+void Debugger_for_chat::print_message(QString const& message) {
+	QString hist = ui.plainTextEdit->toPlainText();
+	hist += (message + '\r');
+	ui.plainTextEdit->setPlainText(hist);
 }

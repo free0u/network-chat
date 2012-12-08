@@ -25,8 +25,9 @@ private slots:
 private:
 	Ui::Debugger_for_chatClass ui;
 	QUdpSocket *sok;
-
 	int cnt_msg;
+
+	void print_message(QString const& message);
 };
 
 #endif // DEBUGGER_FOR_CHAT_H
