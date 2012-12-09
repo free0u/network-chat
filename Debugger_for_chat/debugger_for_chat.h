@@ -28,6 +28,7 @@ private:
 	int cnt_msg;
 
 	void print_message(QString const& message);
+	bool is_my_ip(QHostAddress &host);
 };
 
 #endif // DEBUGGER_FOR_CHAT_H

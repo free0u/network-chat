@@ -1,6 +1,5 @@
 #include "debugger_for_chat.h"
 
-
 Debugger_for_chat::Debugger_for_chat(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags)
 {
@@ -29,10 +28,14 @@ void Debugger_for_chat::showMessage() {
 	while (sok->hasPendingDatagrams()) {
 		QByteArray data;
 		data.resize(sok->pendingDatagramSize());
-		sok->readDatagram(data.data(), data.size());
-		QString m = data.data();
-		m = "receive: " + m;
-		print_message(m);
+		QHostAddress host;
+		sok->readDatagram(data.data(), data.size(), &host);
+		bool res = is_my_ip(host);
+		if (!is_my_ip(host)) {
+			QString m = data.data();
+			m = "receive: " + m;
+			print_message(m);
+		}
 	}
 }
 
@@ -40,4 +43,12 @@ void Debugger_for_chat::print_message(QString const& message) {
 	QString hist = ui.plainTextEdit->toPlainText();
 	hist += (message + '\r');
 	ui.plainTextEdit->setPlainText(hist);
+}
+
+bool Debugger_for_chat::is_my_ip(QHostAddress &host) {
+	QList<QHostAddress> addr = QNetworkInterface::allAddresses();
+	for (size_t i = 0; i < addr.size(); ++i) {
+		if (addr[i] == host) return true;
+	}
+	return false;
 }
