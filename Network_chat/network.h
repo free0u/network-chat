@@ -30,6 +30,8 @@ public:
 		emit print_message(message);
 	}
 
+	int port;
+
 signals:
 	void print_message(QString const&);
 	void update_client_list(QVector<QString> const& clients_nick, QVector<QHostAddress> const& clients_ip);
@@ -59,7 +61,7 @@ public:
 	bool is_my_ip(QHostAddress const& host);
 
 	bool in_chat;
-	void send_hello(QString const& nick); // TODO 30 sec interval
+	void send_hello(QString const& nick);
 	void send_quit(QHostAddress const& ip);
 
 	void add_client(QHostAddress const& ip, QString const& nick);

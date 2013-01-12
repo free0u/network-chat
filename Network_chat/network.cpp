@@ -3,8 +3,10 @@
 network::network(QObject *parent, QString const& nick)
 	: QObject(parent), my_nick(nick), in_chat(true)
 {
+	port = 3141;
+
 	socket = new QUdpSocket(this);
-	socket->bind(31313, QUdpSocket::ShareAddress);
+	socket->bind(port, QUdpSocket::ShareAddress);
 	connect(socket, SIGNAL(readyRead()), this, SLOT(read_message()));
 	// TODO think
 	//socket->setMulticastInterface(QNetworkInterface::allInterfaces()[0]);
@@ -12,7 +14,6 @@ network::network(QObject *parent, QString const& nick)
 	timer_alive = new QTimer(this);
 	connect(timer_alive, SIGNAL(timeout()), this, SLOT(keepalive()));
 
-	// TODO uncomment
 	timer_alive->start(1000 * 2 * 60); // 2 mins
 
 	// hello timer
@@ -95,12 +96,12 @@ void network::read_message() {
 
 void network::send_broadcast_command(QString const& message) {
 	QByteArray datagram = message.toUtf8();
-	socket->writeDatagram(datagram.data(), datagram.size(), QHostAddress::Broadcast, 31313);
+	socket->writeDatagram(datagram.data(), datagram.size(), QHostAddress::Broadcast, port);
 }
 
 void network::send_command(QString const& message, QHostAddress const& host) {
 	QByteArray datagram = message.toUtf8();
-	socket->writeDatagram(datagram.data(), datagram.size(), host, 31313);
+	socket->writeDatagram(datagram.data(), datagram.size(), host, port);
 }
 
 void network::send_hello(QString const& nick) {
@@ -124,8 +125,7 @@ void network::send_join(QHostAddress const& dest, QHostAddress const& ip, QStrin
 }
 
 void network::send_message(QHostAddress const& dest, QHostAddress const& ip, QString const& nick, int time, QString const& message) {
-	// TODO add \0
-	QString mes = "MESSAGE " + ip.toString() + " " + nick + " " + QString::number(time) + " " + message;// + "\0";
+	QString mes = "MESSAGE " + ip.toString() + " " + nick + " " + QString::number(time) + " " + message + "\0";
 	mes += "\r\n";
 	send_command(mes, dest);
 }
@@ -230,10 +230,7 @@ void network::parse_message(QString const& mes, QHostAddress const& dest) {
 		QHostAddress ip(tokens[1]);
 		QString nick = tokens[2];
 		int time_send = tokens[3].toInt();
-		// TODO improve parsing
-		// TODO remove
-		//QString message = tokens[4].remove(tokens[4].size() - 1, 1); 
-		QString message = tokens[4];
+		QString message = tokens[4].remove(tokens[4].size() - 1, 1); 
 		for (int i = 5; i < tokens.size(); ++i) {
 			message += " ";
 			message += tokens[i];
@@ -275,6 +272,7 @@ void network::parse_message(QString const& mes, QHostAddress const& dest) {
 		}
 		if (!have_message) {
 			emit print_message(nick + ": " + message);
+
 			history.push_back(info);
 			for (int i = 0; i < clients_ip.size(); ++i) {
 				if (clients_ip[i] == ip) continue;
@@ -294,7 +292,6 @@ void network::parse_message(QString const& mes, QHostAddress const& dest) {
 				pull_of_sending_messages.remove(i);
 
 				emit print_message(nick + ": " + info.message);
-
 				info.message.clear();
 				history.push_back(info);
 				break;

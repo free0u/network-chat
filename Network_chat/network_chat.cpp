@@ -28,6 +28,7 @@ void Network_chat::send_message() {
 
 void Network_chat::print_message(QString const& message) {
 	QString hist = ui.plainTextEditChat->toPlainText();
+	
 	ui.plainTextEditChat->setPlainText(hist + message + "\r");
 }
 
