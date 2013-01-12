@@ -11,8 +11,8 @@ Network_chat::Network_chat(QWidget *parent, Qt::WFlags flags)
 	// connect buttons
 	connect(ui.pushButtonJoin, SIGNAL(clicked()), this, SLOT(join_chat()));
 	connect(ui.pushButtonLeave, SIGNAL(clicked()), this, SLOT(leave_chat()));
-	
-	connect(ui.pushButtonSend, SIGNAL(clicked()), this, SLOT(test_send()));
+	connect(ui.pushButtonSend, SIGNAL(clicked()), this, SLOT(send_message()));
+
 }
 
 Network_chat::~Network_chat()
@@ -20,16 +20,24 @@ Network_chat::~Network_chat()
 
 }
 
-void Network_chat::test_send() {
-	//net->send_hello(ui.lineEditNick->text() + " " + QString::number(rand() % 100));
-	//net->send_accepted(QHostAddress("127.0.0.1"), "nick", 4234234);
-	//net->send_keepalive();
-
+void Network_chat::send_message() {
+	QString message = ui.lineEditMessage->text();
+	net->send_message_from_text(message);
+	ui.lineEditMessage->setText("");
 }
 
 void Network_chat::print_message(QString const& message) {
 	QString hist = ui.plainTextEditChat->toPlainText();
 	ui.plainTextEditChat->setPlainText(hist + message + "\r");
+}
+
+void Network_chat::update_client_list(QVector<QString> const& clients_nick, QVector<QHostAddress> const& clients_ip) {
+	QString data = "";
+	for (int i = 0; i < clients_ip.size(); ++i) {
+		QString client = clients_nick[i] + " [" + clients_ip[i].toString() + "]\r";
+		data += client;
+	}
+	ui.plainTextEditPeers->setPlainText(data);
 }
 
 void Network_chat::join_chat() {
@@ -38,6 +46,8 @@ void Network_chat::join_chat() {
 
 	// connect
 	connect(net, SIGNAL(print_message(QString const&)), this, SLOT(print_message(QString const&)));
+	connect(net, SIGNAL(update_client_list(QVector<QString> const&, QVector<QHostAddress> const&)),
+		this, SLOT(update_client_list(QVector<QString> const&, QVector<QHostAddress> const&)));
 
 	net->in_chat = true;
 	setup_ui_chat(true);
@@ -49,7 +59,9 @@ void Network_chat::leave_chat() {
 	net->in_chat = false;
 	setup_ui_chat(false);
 
-	net->send_quit();
+	net->send_quit(net->my_ip());
+
+	delete net;
 }
 
 

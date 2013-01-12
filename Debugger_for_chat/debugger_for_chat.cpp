@@ -19,6 +19,7 @@ Debugger_for_chat::~Debugger_for_chat()
 
 void Debugger_for_chat::sendMessage() {
 	QString msg = ui.lineEditChat->text();
+	msg += "\r\n";
 	QByteArray data = msg.toUtf8();
 	sok->writeDatagram(data.data(), QHostAddress::Broadcast, 31313);
 	msg = "send: " + msg;
