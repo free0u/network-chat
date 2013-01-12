@@ -21,6 +21,7 @@ public:
 private slots:
 	void showMessage();
 	void sendMessage();
+	void clear_field();
 
 private:
 	Ui::Debugger_for_chatClass ui;

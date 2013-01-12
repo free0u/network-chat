@@ -18,15 +18,15 @@ public slots:
 	void print_message(QString const&);
 
 private slots:
-	void press_join_button();
-	void press_leave_button();
+	void join_chat();
+	void leave_chat();
+	void test_send();
 
 private:
 	Ui::Network_chatClass ui;
 	network *net;
-	bool in_chat;
 
-	void setup_ui_chat();
+	void setup_ui_chat(bool in_chat);
 };
 
 #endif // NETWORK_CHAT_H

@@ -14,7 +14,7 @@
    <string>Debugger_for_chat</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -33,6 +33,13 @@
         <widget class="QPushButton" name="pushButtonSend">
          <property name="text">
           <string>Send</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButtonClear">
+         <property name="text">
+          <string>Clear</string>
          </property>
         </widget>
        </item>

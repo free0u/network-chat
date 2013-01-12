@@ -9,6 +9,7 @@ Debugger_for_chat::Debugger_for_chat(QWidget *parent, Qt::WFlags flags)
 	sok->bind(31313, QUdpSocket::ShareAddress);
 	connect(sok, SIGNAL(readyRead()), this, SLOT(showMessage()));
 	connect(ui.pushButtonSend, SIGNAL(clicked()), this, SLOT(sendMessage()));
+	connect(ui.pushButtonClear, SIGNAL(clicked()), this, SLOT(clear_field()));
 }
 
 Debugger_for_chat::~Debugger_for_chat()
@@ -37,6 +38,10 @@ void Debugger_for_chat::showMessage() {
 			print_message(m);
 		}
 	}
+}
+
+void Debugger_for_chat::clear_field() {
+	ui.plainTextEdit->setPlainText("");
 }
 
 void Debugger_for_chat::print_message(QString const& message) {

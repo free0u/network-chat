@@ -6,21 +6,24 @@ Network_chat::Network_chat(QWidget *parent, Qt::WFlags flags)
 {
 	ui.setupUi(this);
 
-	net = new network(this);
-	in_chat = false;
-	setup_ui_chat();
-
-	// connect
-	connect(net, SIGNAL(print_message(QString const&)), this, SLOT(print_message(QString const&)));
+	setup_ui_chat(false);
 
 	// connect buttons
-	connect(ui.pushButtonJoin, SIGNAL(clicked()), this, SLOT(press_join_button()));
-	connect(ui.pushButtonLeave, SIGNAL(clicked()), this, SLOT(press_leave_button()));
-
+	connect(ui.pushButtonJoin, SIGNAL(clicked()), this, SLOT(join_chat()));
+	connect(ui.pushButtonLeave, SIGNAL(clicked()), this, SLOT(leave_chat()));
+	
+	connect(ui.pushButtonSend, SIGNAL(clicked()), this, SLOT(test_send()));
 }
 
 Network_chat::~Network_chat()
 {
+
+}
+
+void Network_chat::test_send() {
+	//net->send_hello(ui.lineEditNick->text() + " " + QString::number(rand() % 100));
+	//net->send_accepted(QHostAddress("127.0.0.1"), "nick", 4234234);
+	//net->send_keepalive();
 
 }
 
@@ -29,23 +32,29 @@ void Network_chat::print_message(QString const& message) {
 	ui.plainTextEditChat->setPlainText(hist + message + "\r");
 }
 
-void Network_chat::press_join_button() {
-	in_chat = true;
+void Network_chat::join_chat() {
 	QString nick = ui.lineEditNick->text();
-	setup_ui_chat();
-	qDebug() << "Join: " + nick;
+	net = new network(this, nick);
+
+	// connect
+	connect(net, SIGNAL(print_message(QString const&)), this, SLOT(print_message(QString const&)));
+
+	net->in_chat = true;
+	setup_ui_chat(true);
+
+	net->send_hello(nick);
 }
 
-void Network_chat::press_leave_button() {
-	in_chat = false;
-	QString nick = ui.lineEditNick->text();
-	setup_ui_chat();
-	qDebug() << "Leave: " + nick;
+void Network_chat::leave_chat() {
+	net->in_chat = false;
+	setup_ui_chat(false);
+
+	net->send_quit();
 }
 
 
 
-void Network_chat::setup_ui_chat() {
+void Network_chat::setup_ui_chat(bool in_chat) {
 	ui.plainTextEditChat->clear();
 	ui.plainTextEditPeers->clear();
 	ui.lineEditMessage->clear();
