@@ -28,8 +28,8 @@ struct client_info {
 	client_info(QHostAddress const& ip, QString const& nick, int time) :
 		ip(ip), nick(nick), last_active(time) {}
 
-	bool operator < (client_info const& a) const {
-		return ip.toIPv4Address() < a.ip.toIPv4Address();
+	bool operator == (client_info const& a) const {
+		return ip == a.ip;
 	}
 };
 
@@ -49,7 +49,7 @@ public:
 
 signals:
 	void print_message(QString const&);
-	void update_client_list(QVector<QString> const& clients_nick, QVector<QHostAddress> const& clients_ip);
+	void update_client_list();
 
 private slots:
 	void read_message();
@@ -64,7 +64,7 @@ public:
 	void send_command(QString const& message, QHostAddress const& host);
 
 	// commands
-	void send_response(QHostAddress const& dest, QString const& my_nick, QVector<QHostAddress> const& ips, QVector<QString> const& nicks);
+	void send_response(QHostAddress const& dest);
 	void send_join(QHostAddress const& dest, QHostAddress const& ip, QString const& nick);
 	void send_message(QHostAddress const& dest, QHostAddress const& ip, QString const& nick, int time, QString const& message);
 	void send_accepted(QHostAddress const& dest, QString const& nick, int time);
@@ -80,17 +80,12 @@ public:
 	void send_quit(QHostAddress const& ip);
 
 	void add_client(QHostAddress const& ip, QString const& nick);
-	void remove_client(QHostAddress const& ip);
+	void remove_client_by_ip(QHostAddress const& ip);
 	void parse_message(QString const& message, QHostAddress const& dest);
 
 	void send_message_from_text(QString const& message);
 
-	// TODO make list
-	
-	//QVector<QHostAddress> clients_ip;
-	//QVector<QString> clients_nick;
-	//QVector<int> clients_last_keepalive;
-	QSet<client_info> clients;
+	QVector<client_info> clients;
 
 	QVector<message_info> history, pull_of_sending_messages;
 private:

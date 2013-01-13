@@ -16,7 +16,7 @@ public:
 
 public slots:
 	void print_message(QString const&);
-	void update_client_list(QVector<QString> const& clients_nick, QVector<QHostAddress> const& clients_ip);
+	void update_client_list();
 
 private slots:
 	void join_chat();

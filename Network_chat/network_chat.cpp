@@ -32,10 +32,11 @@ void Network_chat::print_message(QString const& message) {
 	ui.plainTextEditChat->setPlainText(hist + message + "\r");
 }
 
-void Network_chat::update_client_list(QVector<QString> const& clients_nick, QVector<QHostAddress> const& clients_ip) {
+void Network_chat::update_client_list() {
 	QString data = "";
-	for (int i = 0; i < clients_ip.size(); ++i) {
-		QString client = clients_nick[i] + " [" + clients_ip[i].toString() + "]\r";
+	QVector<client_info> clients = net->clients;
+	for (int i = 0; i < clients.size(); ++i) {
+		QString client = clients[i].nick + " [" + clients[i].ip.toString() + "]\r";
 		data += client;
 	}
 	ui.plainTextEditPeers->setPlainText(data);
@@ -47,8 +48,7 @@ void Network_chat::join_chat() {
 
 	// connect
 	connect(net, SIGNAL(print_message(QString const&)), this, SLOT(print_message(QString const&)));
-	connect(net, SIGNAL(update_client_list(QVector<QString> const&, QVector<QHostAddress> const&)),
-		this, SLOT(update_client_list(QVector<QString> const&, QVector<QHostAddress> const&)));
+	connect(net, SIGNAL(update_client_list()), this, SLOT(update_client_list()));
 
 	net->in_chat = true;
 	setup_ui_chat(true);
