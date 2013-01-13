@@ -125,7 +125,8 @@ void network::send_join(QHostAddress const& dest, QHostAddress const& ip, QStrin
 }
 
 void network::send_message(QHostAddress const& dest, QHostAddress const& ip, QString const& nick, int time, QString const& message) {
-	QString mes = "MESSAGE " + ip.toString() + " " + nick + " " + QString::number(time) + " " + message + "\0";
+	QString mes = "MESSAGE " + ip.toString() + " " + nick + " " + QString::number(time) + " " + message;
+	mes += '\0';
 	mes += "\r\n";
 	send_command(mes, dest);
 }
@@ -179,15 +180,20 @@ void network::remove_client(QHostAddress const& ip) {
 void network::parse_message(QString const& mes, QHostAddress const& dest) {
 	QString message(mes);
 	if (message.size() < 2) return;
-	message.remove(message.size() - 2, 2);
-	
+	if (message.right(2) == "\r\n") {
+		message.remove(message.size() - 2, 2);
+	}
+
 	QStringList tokens = message.split(' ');
+	if (tokens.isEmpty()) return;
+	
 	QString cmd = tokens[0];
 	
-	// TODO add try excpt
-	if (cmd == "HELLO") { // HELLO NICKNAME
-		QString nick = tokens[1];
+	if (cmd == "HELLO") { // HELLO 
+		if (tokens.size() < 2) return;
 		
+		QString nick = tokens[1];
+
 		send_response(dest, my_nick, clients_ip, clients_nick);
 
 		for (int i = 0; i < clients_ip.size(); ++i) {
@@ -196,10 +202,17 @@ void network::parse_message(QString const& mes, QHostAddress const& dest) {
 		}
 
 		add_client(dest, nick);
-	} else if (cmd == "RESPONSE") { // RESPONSE NICKNAME_0 IP_1 NICKNAME_1 IP_2 NICKNAME_2 … IP_n NICKNAME_n
+
+		return;
+	} 
+	
+	if (cmd == "RESPONSE") { // RESPONSE NICKNAME_0 IP_1 NICKNAME_1 IP_2 NICKNAME_2 … IP_n NICKNAME_n
+		if (tokens.size() < 2) return;
+		
 		QString nick_0 = tokens[1];
 		QVector<QHostAddress> ips;
 		QVector<QString> nicks;
+		
 		int i = 2;
 		while (i < tokens.size()) {
 			ips.push_back(QHostAddress(tokens[i]));
@@ -211,11 +224,20 @@ void network::parse_message(QString const& mes, QHostAddress const& dest) {
 		nicks.push_back(nick_0);
 
 		for (int i = 0; i < ips.size(); ++i) {
+			if (ips[i].isNull()) continue;
 			add_client(ips[i], nicks[i]);
 		}
-	} else if (cmd == "JOIN") { // JOIN IP NICKNAME
-		QHostAddress ip(tokens[1]);
+
+		return;
+	}
+	
+	if (cmd == "JOIN") { // JOIN IP NICKNAME
+		if (tokens.size() < 3) return;
+
 		QString nick = tokens[2];
+		QHostAddress ip(tokens[1]);
+
+		if (ip.isNull()) return;
 
 		bool is_new_client = true;
 		for (int i = 0; i < clients_ip.size(); ++i) {
@@ -226,15 +248,24 @@ void network::parse_message(QString const& mes, QHostAddress const& dest) {
 		}
 		
 		add_client(ip, nick);
-	} else if (cmd == "MESSAGE") { // MESSAGE IP NICKNAME TIME MSG
+
+		return;
+	}
+	
+	if (cmd == "MESSAGE") { // MESSAGE IP NICKNAME TIME MSG
+		if (tokens.size() < 5) return;
+
 		QHostAddress ip(tokens[1]);
 		QString nick = tokens[2];
 		int time_send = tokens[3].toInt();
-		QString message = tokens[4].remove(tokens[4].size() - 1, 1); 
+		QString message = tokens[4];
+
 		for (int i = 5; i < tokens.size(); ++i) {
 			message += " ";
 			message += tokens[i];
 		}
+
+		if (ip.isNull()) return;
 
 		// known_host?
 		bool known_host = false;
@@ -281,7 +312,13 @@ void network::parse_message(QString const& mes, QHostAddress const& dest) {
 				send_message(clients_ip[i], ip, nick, time_send, message);
 			}
 		}
-	} else if (cmd == "ACCEPTED") { // ACCEPTED NICKNAME TIME
+
+		return;
+	}
+	
+	if (cmd == "ACCEPTED") { // ACCEPTED NICKNAME TIME
+		if (tokens.size() < 3) return;
+
 		QString nick = tokens[1];
 		int time = tokens[2].toInt();
 		message_info cur_info(nick, time);
@@ -298,8 +335,15 @@ void network::parse_message(QString const& mes, QHostAddress const& dest) {
 			}
 		}
 
-	} else if (cmd == "QUIT") { // QUIT IP
+		return;
+	}
+	
+	if (cmd == "QUIT") { // QUIT IP
+		if (tokens.size() < 2) return;
+
 		QHostAddress ip(tokens[1]);
+
+		if (ip.isNull()) return;
 
 		bool known_host = false;
 		for (int i = 0; i < clients_ip.size(); ++i) {
@@ -319,9 +363,16 @@ void network::parse_message(QString const& mes, QHostAddress const& dest) {
 		if (clients_ip.isEmpty()) {
 			timer_hello->start(1000 * 30); // 30 sec
 		}
-	} else if (cmd == "GET") { // GET
+
+		return;
+	}
+	
+	if (cmd == "GET") { // GET
 		send_response(dest, my_nick, clients_ip, clients_nick);
-	} else if (cmd == "KEEPALIVE") { // KEEPALIVE
+		return;
+	}
+	
+	if (cmd == "KEEPALIVE") { // KEEPALIVE
 		for (int i = 0; i < clients_ip.size(); ++i) {
 			if (clients_ip[i] == dest) {
 				clients_last_keepalive[i] = time(NULL);
@@ -346,7 +397,6 @@ void network::send_message_from_text(QString const& message) {
 
 QHostAddress network::my_ip() {
 	QList<QHostAddress> addr = QNetworkInterface::allAddresses();
-
 	// TODO think
 	for (size_t i = 0; i < addr.size(); ++i) {\
 		QHostAddress a = QHostAddress(addr[i].toIPv4Address());
@@ -359,6 +409,8 @@ QHostAddress network::my_ip() {
 }
 
 bool network::is_my_ip(QHostAddress const& host) {
+	qDebug() << QNetworkInterface::allInterfaces();
+
 	QList<QHostAddress> addr = QNetworkInterface::allAddresses();
 	for (size_t i = 0; i < addr.size(); ++i) {
 		if (addr[i] == host) return true;

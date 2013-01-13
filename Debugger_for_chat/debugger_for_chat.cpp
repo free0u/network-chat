@@ -6,7 +6,7 @@ Debugger_for_chat::Debugger_for_chat(QWidget *parent, Qt::WFlags flags)
 	ui.setupUi(this);
 	cnt_msg = 0;
 	sok = new QUdpSocket(this);
-	sok->bind(31313, QUdpSocket::ShareAddress);
+	sok->bind(3141, QUdpSocket::ShareAddress);
 	connect(sok, SIGNAL(readyRead()), this, SLOT(showMessage()));
 	connect(ui.pushButtonSend, SIGNAL(clicked()), this, SLOT(sendMessage()));
 	connect(ui.pushButtonClear, SIGNAL(clicked()), this, SLOT(clear_field()));
@@ -21,7 +21,7 @@ void Debugger_for_chat::sendMessage() {
 	QString msg = ui.lineEditChat->text();
 	msg += "\r\n";
 	QByteArray data = msg.toUtf8();
-	sok->writeDatagram(data.data(), QHostAddress::Broadcast, 31313);
+	sok->writeDatagram(data.data(), QHostAddress::Broadcast, 3141);
 	msg = "send: " + msg;
 	print_message(msg);
 }

@@ -4,7 +4,9 @@
 #include <QObject>
 #include <QtNetwork>
 #include <QFile>
+
 #include <ctime>
+#include <stdexcept>
 
 struct message_info {
 	QString nick, message;
@@ -15,6 +17,19 @@ struct message_info {
 
 	bool operator == (message_info const& a) const {
 		return nick == a.nick && time == a.time;
+	}
+};
+
+struct client_info {
+	QHostAddress ip;
+	QString nick;
+	int last_active;
+	client_info() {}
+	client_info(QHostAddress const& ip, QString const& nick, int time) :
+		ip(ip), nick(nick), last_active(time) {}
+
+	bool operator < (client_info const& a) const {
+		return ip.toIPv4Address() < a.ip.toIPv4Address();
 	}
 };
 
@@ -71,9 +86,12 @@ public:
 	void send_message_from_text(QString const& message);
 
 	// TODO make list
-	QVector<QHostAddress> clients_ip;
-	QVector<QString> clients_nick;
-	QVector<int> clients_last_keepalive;
+	
+	//QVector<QHostAddress> clients_ip;
+	//QVector<QString> clients_nick;
+	//QVector<int> clients_last_keepalive;
+	QSet<client_info> clients;
+
 	QVector<message_info> history, pull_of_sending_messages;
 private:
 	QUdpSocket *socket;
