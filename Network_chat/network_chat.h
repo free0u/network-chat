@@ -26,6 +26,7 @@ private slots:
 private:
 	Ui::Network_chatClass ui;
 	network *net;
+	QList<QNetworkInterface> ifaces;
 
 	void setup_ui_chat(bool in_chat);
 };

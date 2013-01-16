@@ -59,6 +59,7 @@ public:
 	QString my_nick;
 	QFile *file;
 	QTextStream *out;
+	QUdpSocket *socket;
 
 	void send_broadcast_command(QString const& message);
 	void send_command(QString const& message, QHostAddress const& host);
@@ -89,7 +90,7 @@ public:
 
 	QVector<message_info> history, pull_of_sending_messages;
 private:
-	QUdpSocket *socket;
+	
 	QTimer *timer_alive, *timer_hello, *timer_message_sending;
 
 	

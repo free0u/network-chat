@@ -46,6 +46,10 @@ void Network_chat::join_chat() {
 	QString nick = ui.lineEditNick->text();
 	net = new network(this, nick);
 
+	// setup iface
+	int ind = ui.comboBox->currentIndex();
+	net->socket->setMulticastInterface(ifaces[ind]);
+
 	// connect
 	connect(net, SIGNAL(print_message(QString const&)), this, SLOT(print_message(QString const&)));
 	connect(net, SIGNAL(update_client_list()), this, SLOT(update_client_list()));
@@ -83,4 +87,14 @@ void Network_chat::setup_ui_chat(bool in_chat) {
 	ui.plainTextEditPeers->setEnabled(in_chat);
 	ui.lineEditMessage->setEnabled(in_chat);
 	ui.lineEditNick->setEnabled(!in_chat);
+
+	// setup combobox
+	if (!in_chat) {
+		ui.comboBox->clear();
+		ifaces = QNetworkInterface::allInterfaces();
+		for (int i = 0; i < ifaces.size(); ++i) {
+			ui.comboBox->addItem(ifaces[i].humanReadableName());
+		}
+	}
+	ui.comboBox->setEnabled(!in_chat);
 }

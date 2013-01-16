@@ -392,26 +392,46 @@ void network::send_message_from_text(QString const& message) {
 
 
 QHostAddress network::my_ip() {
-	QList<QHostAddress> addr = QNetworkInterface::allAddresses();
-	// TODO think
-	for (size_t i = 0; i < addr.size(); ++i) {\
-		QHostAddress a = QHostAddress(addr[i].toIPv4Address());
-		//if (a != QHostAddress("0.0.0.0") && a != QHostAddress("127.0.0.1")) {
-		if (a.toString().contains("192.168")) {
-			return a;
+	QNetworkInterface iface = socket->multicastInterface();
+	QList<QHostAddress> addr = iface.allAddresses();
+	for (int i = 0; i < addr.size(); ++i) {
+		if (addr[i].protocol() == QAbstractSocket::IPv4Protocol) {
+			return addr[i];
 		}
 	}
+
+	return QHostAddress::Null;
+
+
+	// TODO delete
+	//QList<QHostAddress> addr = QNetworkInterface::allAddresses();
+	//for (size_t i = 0; i < addr.size(); ++i) {\
+	//	QHostAddress a = QHostAddress(addr[i].toIPv4Address());
+	//	//if (a != QHostAddress("0.0.0.0") && a != QHostAddress("127.0.0.1")) {
+	//	if (a.toString().contains("192.168")) {
+	//		return a;
+	//	}
+	//}
 	
 }
 
 bool network::is_my_ip(QHostAddress const& host) {
-	qDebug() << QNetworkInterface::allInterfaces();
+	return (my_ip() == host);
 
-	QList<QHostAddress> addr = QNetworkInterface::allAddresses();
-	for (size_t i = 0; i < addr.size(); ++i) {
-		if (addr[i] == host) return true;
-	}
-	return false;
+
+	//qDebug() << socket->multicastInterface();
+	//QNetworkInterface iface = socket->multicastInterface();
+	//qDebug() << iface.allAddresses();
+	//QHostAddress ip = iface.allAddresses().first();
+	//qDebug() << ip.protocol();
+
+
+
+	//QList<QHostAddress> addr = QNetworkInterface::allAddresses();
+	//for (size_t i = 0; i < addr.size(); ++i) {
+	//	if (addr[i] == host) return true;
+	//}
+	//return false;
 }
 
 network::~network()
