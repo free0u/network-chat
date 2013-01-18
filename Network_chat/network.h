@@ -37,29 +37,29 @@ class network : public QObject
 {
 	Q_OBJECT
 
-public:
-	network(QObject *parent, QString const& nick);
-	~network();
-
-	void gen_sig(QString const& message) {
-		emit print_message(message);
-	}
-
-	int port;
-
 signals:
 	void print_message(QString const&);
 	void update_client_list();
 
-private slots:
-	void read_message();
-	void timer_hello_is_timeout();
-
 public:
+	network(QObject *parent, QString const& nick);
+	~network();
+	
+	void send_message_from_text(QString const& message);
+	void send_hello(QString const& nick);
+	void send_quit(QHostAddress const& ip);
+	QHostAddress my_ip();
+
+	QVector<client_info> clients;
+	bool in_chat;
+	QUdpSocket *socket;
+
+
+
+private:
 	QString my_nick;
 	QFile *file;
 	QTextStream *out;
-	QUdpSocket *socket;
 
 	void send_broadcast_command(QString const& message);
 	void send_command(QString const& message, QHostAddress const& host);
@@ -73,29 +73,25 @@ public:
 	
 	
 
-	QHostAddress my_ip();
 	bool is_my_ip(QHostAddress const& host);
 
-	bool in_chat;
-	void send_hello(QString const& nick);
-	void send_quit(QHostAddress const& ip);
+	
 
 	void add_client(QHostAddress const& ip, QString const& nick);
 	void remove_client_by_ip(QHostAddress const& ip);
 	void parse_message(QString const& message, QHostAddress const& dest);
 
-	void send_message_from_text(QString const& message);
+	
 
-	QVector<client_info> clients;
 
 	QVector<message_info> history, pull_of_sending_messages;
-private:
-	
+	int port;
 	QTimer *timer_alive, *timer_hello, *timer_message_sending;
 
 	
-
-public slots:
+private slots:
+	void read_message();
+	void timer_hello_is_timeout();
 	void keepalive();
 	void resend_messages();
 

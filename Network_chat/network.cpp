@@ -5,11 +5,10 @@ network::network(QObject *parent, QString const& nick)
 {
 	port = 3141;
 
+
 	socket = new QUdpSocket(this);
 	socket->bind(port, QUdpSocket::ShareAddress);
 	connect(socket, SIGNAL(readyRead()), this, SLOT(read_message()));
-	// TODO think
-	//socket->setMulticastInterface(QNetworkInterface::allInterfaces()[0]);
 
 	timer_alive = new QTimer(this);
 	connect(timer_alive, SIGNAL(timeout()), this, SLOT(keepalive()));
@@ -23,7 +22,7 @@ network::network(QObject *parent, QString const& nick)
 
 	// message_sending timer
 	timer_message_sending = new QTimer(this);
-	connect(timer_message_sending, SIGNAL(timeout), this, SLOT(resend_messages()));
+	connect(timer_message_sending, SIGNAL(timeout()), this, SLOT(resend_messages()));
 	timer_message_sending->start(1000 * 60); // 1 min
 
 
@@ -77,29 +76,29 @@ void network::read_message() {
 		QByteArray data;
 		data.resize(socket->pendingDatagramSize());
 		socket->readDatagram(data.data(), data.size(), &host);
+
+		//qDebug() << "recieved: ";
+		//qDebug() << data.data();
+
 		if (!is_my_ip(host)) {
 			message = data.data();
-
-			QString mes = message;
-			mes.remove(message.size() - 2, 2);
-			mes += " [";
-			mes += host.toString();
-			mes += "]";
-			mes = "<" + mes + ">";
-			(*out) << mes;
-			//emit print_message(mes);
 			parse_message(message, host);
-
 		}
 	}
 }
 
 void network::send_broadcast_command(QString const& message) {
+	//qDebug() << "send: ";
+	//qDebug() << message;
+
 	QByteArray datagram = message.toUtf8();
 	socket->writeDatagram(datagram.data(), datagram.size(), QHostAddress::Broadcast, port);
 }
 
 void network::send_command(QString const& message, QHostAddress const& host) {
+	//qDebug() << "send: ";
+	//qDebug() << message;
+
 	QByteArray datagram = message.toUtf8();
 	socket->writeDatagram(datagram.data(), datagram.size(), host, port);
 }
@@ -111,7 +110,9 @@ void network::send_hello(QString const& nick) {
 
 void network::send_response(QHostAddress const& dest) {
 	QString mes = "RESPONSE " + my_nick;
+	QHostAddress ip = my_ip();
 	for (int i = 0; i < clients.size(); ++i) {
+		if (clients[i].ip == ip) continue;
 		mes += " " + clients[i].ip.toString();
 		mes += " " + clients[i].nick;
 	}
@@ -393,45 +394,19 @@ void network::send_message_from_text(QString const& message) {
 
 QHostAddress network::my_ip() {
 	QNetworkInterface iface = socket->multicastInterface();
-	QList<QHostAddress> addr = iface.allAddresses();
+
+	auto addr = iface.addressEntries();
 	for (int i = 0; i < addr.size(); ++i) {
-		if (addr[i].protocol() == QAbstractSocket::IPv4Protocol) {
-			return addr[i];
+		QHostAddress ip = addr[i].ip();
+		if (ip.protocol() == QAbstractSocket::IPv4Protocol) {
+			return ip;
 		}
 	}
-
 	return QHostAddress::Null;
-
-
-	// TODO delete
-	//QList<QHostAddress> addr = QNetworkInterface::allAddresses();
-	//for (size_t i = 0; i < addr.size(); ++i) {\
-	//	QHostAddress a = QHostAddress(addr[i].toIPv4Address());
-	//	//if (a != QHostAddress("0.0.0.0") && a != QHostAddress("127.0.0.1")) {
-	//	if (a.toString().contains("192.168")) {
-	//		return a;
-	//	}
-	//}
-	
 }
 
 bool network::is_my_ip(QHostAddress const& host) {
 	return (my_ip() == host);
-
-
-	//qDebug() << socket->multicastInterface();
-	//QNetworkInterface iface = socket->multicastInterface();
-	//qDebug() << iface.allAddresses();
-	//QHostAddress ip = iface.allAddresses().first();
-	//qDebug() << ip.protocol();
-
-
-
-	//QList<QHostAddress> addr = QNetworkInterface::allAddresses();
-	//for (size_t i = 0; i < addr.size(); ++i) {
-	//	if (addr[i] == host) return true;
-	//}
-	//return false;
 }
 
 network::~network()

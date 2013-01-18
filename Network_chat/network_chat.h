@@ -13,6 +13,12 @@ class Network_chat : public QMainWindow
 public:
 	Network_chat(QWidget *parent = 0, Qt::WFlags flags = 0);
 	~Network_chat();
+	
+private:
+	Ui::Network_chatClass ui;
+	network *net;
+	QList<QNetworkInterface> ifaces;
+	void setup_ui_chat(bool in_chat);
 
 public slots:
 	void print_message(QString const&);
@@ -22,13 +28,6 @@ private slots:
 	void join_chat();
 	void leave_chat();
 	void send_message();
-
-private:
-	Ui::Network_chatClass ui;
-	network *net;
-	QList<QNetworkInterface> ifaces;
-
-	void setup_ui_chat(bool in_chat);
 };
 
 #endif // NETWORK_CHAT_H
