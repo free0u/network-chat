@@ -27,9 +27,9 @@ void Network_chat::send_message() {
 }
 
 void Network_chat::print_message(QString const& message) {
-	QString hist = ui.plainTextEditChat->toPlainText();
+	QString hist = ui.textBrowserChat->toPlainText();
 	
-	ui.plainTextEditChat->setPlainText(hist + message + "\r");
+	ui.textBrowserChat->setPlainText(hist + message + "\r");
 }
 
 void Network_chat::update_client_list() {
@@ -39,7 +39,7 @@ void Network_chat::update_client_list() {
 		QString client = clients[i].nick + " [" + clients[i].ip.toString() + "]\r";
 		data += client;
 	}
-	ui.plainTextEditPeers->setPlainText(data);
+	ui.textBrowserPeers->setPlainText(data);
 }
 
 void Network_chat::join_chat() {
@@ -72,10 +72,9 @@ void Network_chat::leave_chat() {
 
 
 void Network_chat::setup_ui_chat(bool in_chat) {
-	ui.plainTextEditChat->clear();
-	ui.plainTextEditPeers->clear();
+	ui.textBrowserChat->clear();
+	ui.textBrowserPeers->clear();
 	ui.lineEditMessage->clear();
-	ui.checkBox->setEnabled(true);
 
 	// buttons
 	ui.pushButtonJoin->setEnabled(!in_chat);
@@ -83,8 +82,8 @@ void Network_chat::setup_ui_chat(bool in_chat) {
 	ui.pushButtonSend->setEnabled(in_chat);
 
 	// text edits
-	ui.plainTextEditChat->setEnabled(in_chat);
-	ui.plainTextEditPeers->setEnabled(in_chat);
+	ui.textBrowserChat->setEnabled(in_chat);
+	ui.textBrowserPeers->setEnabled(in_chat);
 	ui.lineEditMessage->setEnabled(in_chat);
 	ui.lineEditNick->setEnabled(!in_chat);
 

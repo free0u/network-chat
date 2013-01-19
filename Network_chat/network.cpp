@@ -244,7 +244,12 @@ void network::parse_message(QString const& mes, QHostAddress const& dest) {
 			}
 		}
 		
-		add_client(ip, nick);
+		if (is_new_client) {
+			for (int i = 0; i < clients.size(); ++i) {
+				send_join(clients[i].ip, dest, nick);
+			}
+			add_client(ip, nick);
+		}
 
 		return;
 	}
